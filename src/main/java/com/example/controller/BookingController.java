@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.Service.PdfService;
+import com.example.Service.TwilioSmsService;
 import com.example.entity.Booking;
 import com.example.entity.Property;
 import com.example.entity.Room;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -26,25 +28,34 @@ public class BookingController {
     private final PropertyRepository propertyRepository;
     private final BookingRepository bookingRepository;
     private final RoomRepository roomRepository;
+    private final TwilioSmsService twilioSmsService;
     @PostMapping("/create-booking")
-    public String createBook(@RequestParam long propertyId,
+    public ResponseEntity<?> createBook(@RequestParam long propertyId,
         @RequestParam String type,
         @RequestBody Booking  booking
 
     ){
         Property property = propertyRepository.findById(propertyId).get();
-       Room  room = roomRepository.findByTypeAndProperty(type, property);
+        List<Room> rooms = roomRepository.findByTypeAndProperty(booking.getFromDate(), booking.getToDate() ,type ,property);
+
+        for (Room room:rooms) {
         if (room.getCount()==0){
-            return "no room available";
+            return new ResponseEntity<>("No Rooms for this date " + room.getDate() ,
+                    HttpStatus.BAD_REQUEST);
+        }
         }
         Booking save = bookingRepository.save(booking);
-        if (save!=null){
-            room.setCount(room.getCount()-1);
-            room.setDate(new Date());
-            roomRepository.save(room);
+
+        if (save!=null) {
+            for (Room room : rooms) {
+                room.setCount(room.getCount() - 1);
+                roomRepository.save(room);
+            }
         }
+        
         pdfService.generateBookPdf("S:\\Hms.booking\\confirmation-order "+save.getId()+ ".pdf" , property ,booking );
-        return "booking created Successfully";
+        twilioSmsService.sendSms("+917318383616" , "+19787248108" , "Booking Confirmed" + booking.getId());
+        return new ResponseEntity<>(rooms , HttpStatus.OK);
     }
 
 
@@ -57,7 +68,7 @@ public class BookingController {
 
         // Generate PDF with image
         pdfService.createPdfWithImage(imageBytes);
-
+        twilioSmsService.sendSms("", "", "");
         return new ResponseEntity<>("PDF generated successfully at the specified path!", HttpStatus.OK);
     }
 }

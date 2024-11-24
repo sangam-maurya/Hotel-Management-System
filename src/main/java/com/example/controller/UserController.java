@@ -25,15 +25,11 @@ public class UserController {
     public ResponseEntity<?>createUser(
             @RequestBody AppUser user
     ){
-
         Optional<AppUser> opUserName = repository.findByUsername(user.getUsername());
-
         if (opUserName.isPresent()){
             return new ResponseEntity<>("Username alredy taken" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         Optional<AppUser> opEmail = repository.findByEmail(user.getEmail());
-
         if (opEmail.isPresent()){
             return new ResponseEntity<>("Email already taken" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -48,7 +44,6 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?>login ( @RequestBody LoginDto dto){
         String token = service.verifyLogin(dto);
-
         if (token!=null){
             TokenDto tokenDto = new TokenDto();
             tokenDto.setToken(token);

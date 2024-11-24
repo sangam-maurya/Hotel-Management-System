@@ -76,6 +76,14 @@
 			<version>1.12.310</version>
 		</dependency>
 		<dependency>
+			<groupId>com.twilio.sdk</groupId>
+			<artifactId>twilio</artifactId>
+			<version>8.36.0</version>
+		</dependency>
+
+
+
+		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>
 			<version>5.5.13.3</version> <!-- Use the latest version -->
