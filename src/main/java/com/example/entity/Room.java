@@ -26,6 +26,8 @@ public class Room {
     @Column(name="date" , nullable = false)
     private LocalDate date;
 
+    private double perNightPrice;
+
     @ManyToOne
     @JoinColumn(name = "property_id")
     private Property property;

@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.Service.OtpService;
 import com.example.Service.UserService;
 import com.example.entity.AppUser;
 import com.example.payload.LoginDto;
@@ -20,6 +21,7 @@ public class UserController {
 
     private final AppUserRepository repository;
     private final UserService  service;
+    private final OtpService otpService;
 
     @PostMapping("/signup")
     public ResponseEntity<?>createUser(
@@ -42,7 +44,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?>login ( @RequestBody LoginDto dto){
+    public ResponseEntity<?>login (@RequestBody LoginDto dto){
+        boolean isOtpValid = otpService.verifyOtp(dto.getPhoneNumber(), dto.getOtp()); // OTP ko verify karna
+        if (!isOtpValid) {
+            return new ResponseEntity<>("Invalid OTP", HttpStatus.FORBIDDEN); // Agar OTP invalid hai
+        }
         String token = service.verifyLogin(dto);
         if (token!=null){
             TokenDto tokenDto = new TokenDto();

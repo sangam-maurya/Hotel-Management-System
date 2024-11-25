@@ -16,6 +16,7 @@ public class UserService {
 
     private final AppUserRepository repository;
     private final JWTService jwtService;
+
     public String verifyLogin(LoginDto loginDto) {
 //        System.out.println("Attempting to login with username: " + loginDto.getUsername());
 

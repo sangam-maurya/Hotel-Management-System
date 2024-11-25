@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.Service.OtpService;
 import com.example.Service.PdfService;
 import com.example.Service.TwilioSmsService;
 import com.example.entity.Booking;
@@ -29,6 +30,7 @@ public class BookingController {
     private final BookingRepository bookingRepository;
     private final RoomRepository roomRepository;
     private final TwilioSmsService twilioSmsService;
+
     @PostMapping("/create-booking")
     public ResponseEntity<?> createBook(@RequestParam long propertyId,
         @RequestParam String type,
@@ -44,6 +46,11 @@ public class BookingController {
                     HttpStatus.BAD_REQUEST);
         }
         }
+        
+//        for (Room room:rooms){
+//            room.getPerNightPrice() * rooms.size() - 1
+//        }
+        
         Booking save = bookingRepository.save(booking);
 
         if (save!=null) {
@@ -55,7 +62,7 @@ public class BookingController {
         
         pdfService.generateBookPdf("S:\\Hms.booking\\confirmation-order "+save.getId()+ ".pdf" , property ,booking );
         twilioSmsService.sendSms("+917318383616" , "+19787248108" , "Booking Confirmed" + booking.getId());
-        return new ResponseEntity<>(rooms , HttpStatus.OK);
+        return new ResponseEntity<>(rooms  , HttpStatus.OK);
     }
 
 
