@@ -14,8 +14,8 @@ public class TwilioWhatsappService {
         try {
             // Twilio Sandbox ka WhatsApp number - From number
             Message message = Message.creator(
-                    new com.twilio.type.PhoneNumber("whatsapp:" + toNumber),  // Recipient's WhatsApp number (To)
-                    new com.twilio.type.PhoneNumber("whatsapp:+14155238886"),  // Twilio Sandbox ka WhatsApp number (From)
+                    new com.twilio.type.PhoneNumber("whatsapp:" + toNumber ),  // Recipient's WhatsApp number (To)
+                    new com.twilio.type.PhoneNumber("whatsapp:" + fromNumber),  // Twilio Sandbox ka WhatsApp number (From)
                     messageContent
             ).create();
 

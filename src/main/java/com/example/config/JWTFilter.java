@@ -44,7 +44,7 @@ public class JWTFilter extends OncePerRequestFilter {
 //            System.out.println(username);
             Optional<AppUser> opUsername = appUserRepository.findByUsername(username);
             if (opUsername.isPresent()){
-                AppUser appUser = opUsername.get();
+                  AppUser appUser = opUsername.get();
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(appUser, null , Collections.singleton(new SimpleGrantedAuthority(appUser.getRole())));
                 authenticationToken.setDetails(new WebAuthenticationDetails(request));
